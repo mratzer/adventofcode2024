@@ -1,13 +1,10 @@
 package eu.marrat.adventofcode2024.day01;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static eu.marrat.adventofcode2024.util.FileUtils.getLines;
-import static eu.marrat.adventofcode2024.util.FileUtils.getNonEmptyLines;
 
 public class Day01 {
 
@@ -15,7 +12,7 @@ public class Day01 {
 
 
         List<String[]> splitted = getLines("day01/input.txt")
-                .map(e -> StringUtils.split(e))
+                .map(StringUtils::split)
                 .toList();
 
         int[] lefts = new int[splitted.size()];
@@ -28,18 +25,28 @@ public class Day01 {
             rights[i++] = Integer.parseInt(strings[1]);
         }
 
-        Arrays.sort(lefts);
-        Arrays.sort(rights);
+//        Arrays.sort(lefts);
+//        Arrays.sort(rights);
 
         int sum = 0;
 
-        for(int j = 0; j < lefts.length; j++) {
-            System.out.format("%5d  %5d -> %5d%n", lefts[j], rights[j],  rights[j] - lefts[j]);
-
-            sum += Math.abs(rights[j] - lefts[j]);
+        for (int left : lefts) {
+            sum += left * count(rights, left);
         }
 
         System.out.println(sum);
+    }
+
+    private static int count(int[] arr, int search) {
+        int count = 0;
+
+        for (int i : arr) {
+            if (i == search) {
+                count++;
+            }
+        }
+
+        return count;
     }
 
 }
