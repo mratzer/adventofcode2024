@@ -1,4 +1,4 @@
-package eu.marrat.adventofcode2024.day01;
+package eu.marrat.adventofcode2024.day03;
 
 import eu.marrat.adventofcode2024.util.FileUtils;
 

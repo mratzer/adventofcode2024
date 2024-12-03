@@ -1,4 +1,4 @@
-package eu.marrat.adventofcode2024.day01;
+package eu.marrat.adventofcode2024.day02;
 
 import org.apache.commons.lang3.StringUtils;
 
