@@ -4,7 +4,6 @@ import eu.marrat.adventofcode2024.util.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -37,7 +36,10 @@ public class Day04 {
         count += getDiagonals(array, WANTED_BACKWARD.length()).stream().filter(WANTED_BACKWARD::equals).count();
 
         System.out.println(count);
+
+        System.out.println(part2(array));
     }
+
 
     private static Stream<String> getColumnsAsLines(char[][] array) {
         List<StringBuffer> stringBuffers = new ArrayList<>();
@@ -82,6 +84,61 @@ public class Day04 {
         }
 
         return diagonals;
+    }
+
+    private static long part2(char[][] array) {
+        List<char[][]> patterns = List.of(
+                new char[][]{
+                        {'M', '.', 'M'},
+                        {'.', 'A', '.'},
+                        {'S', '.', 'S'}
+                },
+                new char[][]{
+                        {'M', '.', 'S'},
+                        {'.', 'A', '.'},
+                        {'M', '.', 'S'}
+                },
+                new char[][]{
+                        {'S', '.', 'M'},
+                        {'.', 'A', '.'},
+                        {'S', '.', 'M'}
+                },
+                new char[][]{
+                        {'S', '.', 'S'},
+                        {'.', 'A', '.'},
+                        {'M', '.', 'M'}
+                }
+        );
+
+        long count = 0;
+
+        for (int line = 0; line < array.length - 3 + 1; line++) {
+            for (int col = 0; col < array[line].length - 3 + 1; col++) {
+                for (char[][] pattern : patterns) {
+                    if (matches(pattern, array, line, col)) {
+                        count++;
+                    }
+                }
+            }
+        }
+        return count;
+    }
+
+    private static boolean matches(char[][] pattern, char[][] array, int line, int col) {
+        for (int x = 0; x < 3; x++) {
+            for (int y = 0; y < 3; y++) {
+                char patternChar = pattern[x][y];
+
+                if (patternChar != '.') {
+                    boolean match = array[line + x][col + y] == patternChar;
+
+                    if (!match) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
 }
