@@ -1,11 +1,9 @@
 package eu.marrat.adventofcode2024.day05;
 
 import eu.marrat.adventofcode2024.util.Utils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -56,33 +54,26 @@ public class Day05 {
                     .collect(Collectors.toSet()));
         }
 
-        int[] sortedPages = IntStream.of(pages)
+        return IntStream.of(pages)
                 .boxed()
-                .sorted(new Comparator<Integer>() {
-                    @Override
-                    public int compare(Integer o1, Integer o2) {
+                .sorted((o1, o2) -> {
 
-                        Set<Rule> applicableRulesForCurrentPages = applicableRulesForManual.stream()
-                                .filter(e -> e.isApplicable(o1, o2))
-                                .collect(Collectors.toSet());
+                    Set<Rule> applicableRulesForCurrentPages = applicableRulesForManual.stream()
+                            .filter(e -> e.isApplicable(o1, o2))
+                            .collect(Collectors.toSet());
 
-                        for (Rule rule : applicableRulesForCurrentPages) {
-                            int result = rule.apply(o2, o1);
+                    for (Rule rule : applicableRulesForCurrentPages) {
+                        int result = rule.apply(o2, o1);
 
-                            if (result != 0) {
-                                return result;
-                            }
+                        if (result != 0) {
+                            return result;
                         }
-
-                        return 0;
                     }
+
+                    return 0;
                 })
                 .mapToInt(e -> e)
                 .toArray();
-
-        System.out.println(ArrayUtils.toString(pages) + " -> " + ArrayUtils.toString(sortedPages));
-
-        return sortedPages;
     }
 
     record Rule(int before, int after) {
