@@ -29,7 +29,12 @@ public class Day05 {
                 .dropWhile(StringUtils::isNotEmpty)
                 .filter(StringUtils::isNotEmpty)
                 .map(pages -> Utils.toIntArray(StringUtils.split(pages, ",")))
-                .filter(e -> isAlreadyInCorrectOrder(e, orderingRules))
+                // part 1
+//                .filter(e -> isAlreadyInCorrectOrder(e, orderingRules))
+                // part2
+                .filter(e -> !isAlreadyInCorrectOrder(e, orderingRules))
+                .map(e -> sortManualPages(e, orderingRules))
+
                 .mapToInt(sortedPages -> sortedPages[sortedPages.length / 2])
                 .sum();
 
