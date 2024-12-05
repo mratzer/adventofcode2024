@@ -1,3 +1,6 @@
 **/*.iml
 .idea/
 target/
+
+# don't check in puzzle input
+src/main/resources/*
