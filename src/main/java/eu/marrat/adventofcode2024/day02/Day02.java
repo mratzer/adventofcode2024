@@ -1,8 +1,9 @@
 package eu.marrat.adventofcode2024.day02;
 
+import eu.marrat.adventofcode2024.util.Utils;
 import org.apache.commons.lang3.StringUtils;
 
-import static eu.marrat.adventofcode2024.util.FileUtils.getLines;
+import static eu.marrat.adventofcode2024.util.Utils.getLines;
 
 public class Day02 {
 
@@ -10,7 +11,7 @@ public class Day02 {
 
         long count = getLines("day02/input.txt")
                 .map(StringUtils::split)
-                .map(Day02::toIntArray)
+                .map(Utils::toIntArray)
                 .filter(Day02::isSaveWithProblemDampener)
                 .count();
 
@@ -62,16 +63,6 @@ public class Day02 {
         }
 
         return asc ^ desc;
-    }
-
-    private static int[] toIntArray(String[] arr) {
-        int[] intArr = new int[arr.length];
-
-        for (int i = 0; i < arr.length; i++) {
-            intArr[i] = Integer.parseInt(arr[i]);
-        }
-
-        return intArr;
     }
 
 }

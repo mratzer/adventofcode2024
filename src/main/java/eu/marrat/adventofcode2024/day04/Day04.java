@@ -1,6 +1,6 @@
 package eu.marrat.adventofcode2024.day04;
 
-import eu.marrat.adventofcode2024.util.FileUtils;
+import eu.marrat.adventofcode2024.util.Utils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -14,11 +14,11 @@ public class Day04 {
     public static final String WANTED_BACKWARD = "SAMX";
 
     public static void main(String[] args) {
-        char[][] array = FileUtils.getLines("day04/input.txt")
+        char[][] array = Utils.getLines("day04/input.txt")
                 .map(String::toCharArray)
                 .toArray(char[][]::new);
 
-        String allLinesAsSingleLine = FileUtils.getLines("day04/input.txt")
+        String allLinesAsSingleLine = Utils.getLines("day04/input.txt")
                 .collect(Collectors.joining(" "));
 
         String allColumnsAsSingleLine = getColumnsAsLines(array)

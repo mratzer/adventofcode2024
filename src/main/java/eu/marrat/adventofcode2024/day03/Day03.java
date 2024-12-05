@@ -1,6 +1,6 @@
 package eu.marrat.adventofcode2024.day03;
 
-import eu.marrat.adventofcode2024.util.FileUtils;
+import eu.marrat.adventofcode2024.util.Utils;
 
 import java.util.List;
 import java.util.Objects;
@@ -15,13 +15,13 @@ public class Day03 {
     private static final Pattern pattern2 = Pattern.compile("(do\\(\\))|(don't\\(\\))|(mul\\(\\d{1,3},\\d{1,3}\\))");
 
     public static void main(String[] args) {
-        int sum = FileUtils.getLines("day03/input.txt")
+        int sum = Utils.getLines("day03/input.txt")
                 .flatMapToInt(Day03::getMultipliers)
                 .sum();
 
         System.out.println(sum);
 
-        List<String> instructions = FileUtils.getLines("day03/input.txt")
+        List<String> instructions = Utils.getLines("day03/input.txt")
                 .flatMap(Day03::getInstructions)
                 .toList();
 

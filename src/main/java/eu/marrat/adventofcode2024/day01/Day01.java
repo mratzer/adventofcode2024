@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Arrays;
 import java.util.List;
 
-import static eu.marrat.adventofcode2024.util.FileUtils.getLines;
+import static eu.marrat.adventofcode2024.util.Utils.getLines;
 
 public class Day01 {
 

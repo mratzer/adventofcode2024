@@ -10,7 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
-public class FileUtils {
+public class Utils {
 
     public static Stream<String> getNonEmptyLines(String filename) {
         return getLines(filename)
@@ -27,6 +27,16 @@ public class FileUtils {
         }
     }
 
-    private FileUtils() {
+    public static int[] toIntArray(String[] arr) {
+        int[] intArr = new int[arr.length];
+
+        for (int i = 0; i < arr.length; i++) {
+            intArr[i] = Integer.parseInt(arr[i]);
+        }
+
+        return intArr;
+    }
+
+    private Utils() {
     }
 }
