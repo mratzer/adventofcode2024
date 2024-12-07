@@ -65,14 +65,17 @@ public class Day07 {
             public long perform(long operand1, long operand2) {
                 return operand1 * operand2;
             }
+        },
+        CONCAT {
+            @Override
+            public long perform(long operand1, long operand2) {
+                return Long.parseLong(Long.toString(operand1) + Long.toString(operand2));
+            }
         };
 
         public abstract long perform(long operand1, long operand2);
     }
 
-    /**
-     * Generic tree with operations, could also be a binary tree because we only have two operations.
-     */
     static class TreeNode {
 
         public final long operand;
@@ -87,7 +90,7 @@ public class Day07 {
             if (parent == null) {
                 result = operand;
             } else {
-                result = operationWithParent.perform(operand, parent.result);
+                result = operationWithParent.perform(parent.result, operand);
             }
         }
 
