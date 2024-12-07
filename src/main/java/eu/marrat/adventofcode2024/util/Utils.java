@@ -37,6 +37,16 @@ public class Utils {
         return intArr;
     }
 
+    public static long[] toLongArray(String[] arr) {
+        long[] longArr = new long[arr.length];
+
+        for (int i = 0; i < arr.length; i++) {
+            longArr[i] = Long.parseLong(arr[i]);
+        }
+
+        return longArr;
+    }
+
     private Utils() {
     }
 }
