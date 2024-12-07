@@ -16,15 +16,39 @@ public class Day06 {
                 .map(String::toCharArray)
                 .toArray(char[][]::new));
 
-//        System.out.println(map);
+        Coordinate currentCoordinate = getCurrentPosition(map).coordinate;
 
-        int moves = 0;
-        Set<Coordinate> visited = new HashSet<>();
+        int loops = 0;
+
+        for (int x = 0; x < map.width; x++) {
+            for (int y = 0; y < map.height; y++) {
+                Coordinate coordinate = new Coordinate(x, y);
+
+                if (coordinate.equals(currentCoordinate)) {
+                    // skip the guard's current position
+                    continue;
+                }
+
+                if (isLoop(map.addObstacle(coordinate))) {
+                    loops++;
+                }
+
+            }
+        }
+
+        System.out.println(loops);
+    }
+
+    private static boolean isLoop(Map map) {
+        Set<Position> visited = new HashSet<>();
 
         Position currentPosition = getCurrentPosition(map);
 
         while (map.isWithinBounds(currentPosition.coordinate)) {
-            visited.add(currentPosition.coordinate);
+            if (!visited.add(currentPosition)) {
+                // when we've visited the same coordinate with the same direction (= our position) -> that's a loop
+                return true;
+            }
 
 //            System.out.println();
 //            System.out.println("currentPosition  " + currentPosition);
@@ -42,15 +66,12 @@ public class Day06 {
                 }
             }
 
-            if (moved) {
-                moves++;
-            } else {
+            if (!moved) {
                 throw new IllegalStateException("Got stuck and can't move any further");
             }
         }
 
-        System.out.println("moves: " + moves);
-        System.out.println("visited distinct coordinates: " + visited.size());
+        return false;
     }
 
     private static Position getCurrentPosition(Map map) {
@@ -89,6 +110,19 @@ public class Day06 {
 
         boolean isWithinBounds(Coordinate coordinate) {
             return coordinate.x >= 0 && coordinate.x < width && coordinate.y >= 0 && coordinate.y < height;
+        }
+
+        Map addObstacle(Coordinate coordinate) {
+            char[][] newMap = new char[map.length][];
+
+            for (int i = 0; i < map.length; i++) {
+                newMap[i] = new char[map[i].length];
+                System.arraycopy(map[i], 0, newMap[i], 0, map[i].length);
+            }
+
+            newMap[coordinate.y][coordinate.x] = OBSTACLE;
+
+            return new Map(newMap);
         }
 
         @Override
