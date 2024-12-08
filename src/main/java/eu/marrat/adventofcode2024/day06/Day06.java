@@ -1,5 +1,9 @@
 package eu.marrat.adventofcode2024.day06;
 
+import eu.marrat.adventofcode2024.util.Plan;
+import eu.marrat.adventofcode2024.util.Coordinate;
+import eu.marrat.adventofcode2024.util.Direction;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -7,21 +11,19 @@ import static eu.marrat.adventofcode2024.util.Utils.getLines;
 
 public class Day06 {
 
-    public static final char WALKABLE = '.';
     public static final char OBSTACLE = '#';
-    public static final char OUT_OF_BOUNDS = '_';
 
     public static void main(String[] args) {
-        Map map = new Map(getLines("day06/input.txt")
+        Plan plan = new Plan(getLines("day06/input.txt")
                 .map(String::toCharArray)
                 .toArray(char[][]::new));
 
-        Coordinate currentCoordinate = getCurrentPosition(map).coordinate;
+        Coordinate currentCoordinate = getCurrentPosition(plan).coordinate;
 
         int loops = 0;
 
-        for (int x = 0; x < map.width; x++) {
-            for (int y = 0; y < map.height; y++) {
+        for (int x = 0; x < plan.width(); x++) {
+            for (int y = 0; y < plan.height(); y++) {
                 Coordinate coordinate = new Coordinate(x, y);
 
                 if (coordinate.equals(currentCoordinate)) {
@@ -29,7 +31,7 @@ public class Day06 {
                     continue;
                 }
 
-                if (isLoop(map.addObstacle(coordinate))) {
+                if (isLoop(plan.withTile(coordinate, OBSTACLE))) {
                     loops++;
                 }
 
@@ -39,12 +41,12 @@ public class Day06 {
         System.out.println(loops);
     }
 
-    private static boolean isLoop(Map map) {
+    private static boolean isLoop(Plan plan) {
         Set<Position> visited = new HashSet<>();
 
-        Position currentPosition = getCurrentPosition(map);
+        Position currentPosition = getCurrentPosition(plan);
 
-        while (map.isWithinBounds(currentPosition.coordinate)) {
+        while (plan.isWithinBounds(currentPosition.coordinate)) {
             if (!visited.add(currentPosition)) {
                 // when we've visited the same coordinate with the same direction (= our position) -> that's a loop
                 return true;
@@ -55,7 +57,7 @@ public class Day06 {
             boolean moved = false;
 
             for (int i = 0; i < 3; i++) {
-                if (currentPosition.canMove(map)) {
+                if (currentPosition.canMove(plan)) {
                     currentPosition = currentPosition.move();
 //                    System.out.println("  could move to  " + currentPosition);
                     moved = true;
@@ -74,12 +76,12 @@ public class Day06 {
         return false;
     }
 
-    private static Position getCurrentPosition(Map map) {
-        for (int x = 0; x < map.width; x++) {
-            for (int y = 0; y < map.height; y++) {
+    private static Position getCurrentPosition(Plan plan) {
+        for (int x = 0; x < plan.width(); x++) {
+            for (int y = 0; y < plan.height(); y++) {
                 Coordinate coordinate = new Coordinate(x, y);
 
-                if ('^' == map.tile(coordinate)) {
+                if ('^' == plan.tile(coordinate)) {
                     return new Position(coordinate, Direction.UP);
                 }
             }
@@ -87,75 +89,10 @@ public class Day06 {
         throw new IllegalArgumentException("Current position not found");
     }
 
-    record Map(char[][] map, int width, int height) {
-
-        /*
-        We need to switch x/y in all operations because the way the array has been generated. Alternatively, we could
-        rotate/mirror the array, but switching is much easier for now. It helps that width and height have the same
-        value, so there MIGHT still be errors in the implementation.
-        I tried to build the whole application in a way that only Map needs to know about that.
-         */
-
-        Map(char[][] map) {
-            this(map, map[0].length, map.length);
-        }
-
-        char tile(Coordinate coordinate) {
-            if (isWithinBounds(coordinate)) {
-                return map[coordinate.y][coordinate.x];
-            } else {
-                return OUT_OF_BOUNDS;
-            }
-        }
-
-        boolean isWithinBounds(Coordinate coordinate) {
-            return coordinate.x >= 0 && coordinate.x < width && coordinate.y >= 0 && coordinate.y < height;
-        }
-
-        Map addObstacle(Coordinate coordinate) {
-            char[][] newMap = new char[map.length][];
-
-            for (int i = 0; i < map.length; i++) {
-                newMap[i] = new char[map[i].length];
-                System.arraycopy(map[i], 0, newMap[i], 0, map[i].length);
-            }
-
-            newMap[coordinate.y][coordinate.x] = OBSTACLE;
-
-            return new Map(newMap);
-        }
-
-        @Override
-        public String toString() {
-            StringBuilder sb = new StringBuilder();
-
-            for (int y = 0; y < height; y++) {
-                for (int x = 0; x < width; x++) {
-                    sb.append(tile(new Coordinate(x, y)));
-                }
-                sb.append(System.lineSeparator());
-            }
-
-            return sb.toString();
-        }
-    }
-
-    record Coordinate(int x, int y) {
-
-        Coordinate next(Direction direction) {
-            return switch (direction) {
-                case UP -> new Coordinate(x, y - 1);
-                case RIGHT -> new Coordinate(x + 1, y);
-                case DOWN -> new Coordinate(x, y + 1);
-                case LEFT -> new Coordinate(x - 1, y);
-            };
-        }
-    }
-
     record Position(Coordinate coordinate, Direction direction) {
 
-        boolean canMove(Map map) {
-            return OBSTACLE != map.tile(coordinate.next(direction));
+        boolean canMove(Plan plan) {
+            return OBSTACLE != plan.tile(coordinate.next(direction));
         }
 
         Position move() {
@@ -165,33 +102,6 @@ public class Day06 {
         Position turnRight() {
             return new Position(coordinate, direction.turnRight());
         }
-    }
-
-    enum Direction {
-        UP {
-            @Override
-            public Direction turnRight() {
-                return RIGHT;
-            }
-        }, RIGHT {
-            @Override
-            public Direction turnRight() {
-                return DOWN;
-            }
-        }, DOWN {
-            @Override
-            public Direction turnRight() {
-                return LEFT;
-            }
-        }, LEFT {
-            @Override
-            public Direction turnRight() {
-                return UP;
-            }
-        };
-
-        public abstract Direction turnRight();
-
     }
 
 }
