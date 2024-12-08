@@ -30,7 +30,8 @@ public class Day08 {
     private static Set<Coordinate> findAntinodeCoordinates(AntennaMap antennaMap, List<Coordinate> antennaCoordinates) {
         Coordinate[] array = antennaCoordinates.toArray(Coordinate[]::new);
 
-        Set<Coordinate> antinodeCoordinates = new HashSet<>();
+        Set<Coordinate> antinodeCoordinates1 = new HashSet<>();
+        Set<Coordinate> antinodeCoordinates2 = new HashSet<>();
 
         for (int i = 0; i < array.length - 1; i++) {
             Coordinate coordinate = array[i];
@@ -40,15 +41,19 @@ public class Day08 {
 
                 Distance distance = coordinate.distance(nextCoordinate);
 
-                antinodeCoordinates.addAll(findAntinodeCoordinates(antennaMap, antennaCoordinates, coordinate, distance));
-                antinodeCoordinates.addAll(findAntinodeCoordinates(antennaMap, antennaCoordinates, coordinate, distance.reverse()));
+                antinodeCoordinates1.addAll(findAntinodeCoordinates1(antennaMap, antennaCoordinates, coordinate, distance));
+                antinodeCoordinates1.addAll(findAntinodeCoordinates1(antennaMap, antennaCoordinates, coordinate, distance.reverse()));
+                antinodeCoordinates2.addAll(findAntinodeCoordinates2(antennaMap, coordinate, distance));
+                antinodeCoordinates2.addAll(findAntinodeCoordinates2(antennaMap, coordinate, distance.reverse()));
             }
         }
 
-        return antinodeCoordinates;
+        antinodeCoordinates2.addAll(antennaCoordinates);
+
+        return antinodeCoordinates2;
     }
 
-    private static Set<Coordinate> findAntinodeCoordinates(AntennaMap antennaMap, List<Coordinate> antennaCoordinates, Coordinate coordinate, Distance distance) {
+    private static Set<Coordinate> findAntinodeCoordinates1(AntennaMap antennaMap, List<Coordinate> antennaCoordinates, Coordinate coordinate, Distance distance) {
         Set<Coordinate> antinodeCoordinates = new HashSet<>();
 
         Coordinate current = coordinate;
@@ -66,6 +71,22 @@ public class Day08 {
 
                 break;
             }
+        }
+
+        return antinodeCoordinates;
+    }
+
+    private static Set<Coordinate> findAntinodeCoordinates2(AntennaMap antennaMap, Coordinate coordinate, Distance distance) {
+        Set<Coordinate> antinodeCoordinates = new HashSet<>();
+
+        Coordinate current = coordinate;
+        Coordinate next = current.atDistance(distance);
+
+        while (antennaMap.isWithinBounds(next)) {
+            antinodeCoordinates.add(next);
+
+            current = next;
+            next = current.atDistance(distance);
         }
 
         return antinodeCoordinates;
